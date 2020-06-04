@@ -63,12 +63,12 @@ public class HttpCallTask implements Callable<ANetApiResponse> {
 		ANetApiResponse response = null;
 		StringBuilder buffer = new StringBuilder();
 		
-		DefaultHttpClient httpCaller = null;
+		org.apache.http.client.HttpClient httpCaller = null;
 		
         try {
             HttpPost httppost = HttpUtility.createPostRequest(this.env, this.request);
-            httpCaller = new DefaultHttpClient();
-			HttpClient.setProxyIfRequested(httpCaller);
+            httpCaller = HttpClient.getHttpsClient();
+			
             HttpResponse httpResponse = httpCaller.execute(httppost);
 
 			if ( null != httpResponse) { 
