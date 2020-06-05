@@ -1,0 +1,41 @@
+based on: anet-java-sdk-2.0.2.jar
+          commit 94492cfb9baf63d0ecd33906c4a9ed541e633bbe
+	  https://github.com/AuthorizeNet/sdk-java/commit/94492cfb9baf63d0ecd33906c4a9ed541e633bbe
+
+Modified by:
+          PR #164: Return error response based on caught exception from postData
+          https://github.com/AuthorizeNet/sdk-java/pull/164
+          https://github.com/mkienenb/sdk-java/tree/return-error-response-on-http-utility-post-data-exception
+
+          PR #166: ant jar build fails to include AuthorizedNetSensitiveTagsConfig.json
+          https://github.com/AuthorizeNet/sdk-java/pull/166
+          https://github.com/mkienenb/sdk-java/tree/ant-jar-build-missing-AuthorizedNetSensitiveTagsConfig.json
+
+          PR #168:  Support separate logger for sensitive information (take 2)
+          https://github.com/AuthorizeNet/sdk-java/pull/168
+          https://github.com/mkienenb/sdk-java/tree/log-sensitive-data-with-wrapped-masking-logger
+
+Maintained as:
+          https://github.com/mkienenb/sdk-java/tree/auth-net-sdk-java-build-2020-06-04-v01
+
+Build with:
+          # build with java 1.8
+          git clone https://github.com/mkienenb/sdk-java.git
+          git checkout auth-net-sdk-java-build-2020-06-04-v01
+          mvn install
+          mvn source:jar
+
+
+commit 904412caee08943ef50df8ce92301d1533b3a7b8 (HEAD -> auth-net-sdk-java-build-2020-06-04-v01, mkienenb/return-error-response-on-http-utility-post-data-exception, mkienenb/auth-net-sdk-java-build-2020-06-04-v01, return-error-response-on-http-utility-post-data-exception)
+Author: Mike Kienenberger <mkienenb@gmail.com>
+Date:   Wed Jun 3 18:59:56 2020 -0400
+
+    Return error response based on caught exception from postData
+
+commit 94492cfb9baf63d0ecd33906c4a9ed541e633bbe (origin/master, origin/HEAD, master)
+Merge: 8aa16e7 ffb80bc
+Author: Gabriel Broadwin Nongsiej <gnongsie@visa.com>
+Date:   Tue Jun 18 16:42:58 2019 +0530
+
+    Merge branch 'master' of https://github.com/AuthorizeNet/sdk-java
+

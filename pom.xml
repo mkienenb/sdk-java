@@ -9,7 +9,7 @@
 	<groupId>net.authorize</groupId>
 	<artifactId>anet-java-sdk</artifactId>
 	<packaging>jar</packaging>
-	<version>2.0.2-SNAPSHOT</version>
+	<version>2.0.2-commit-94492cfb9baf63d0ecd33906c4a9ed541e633bbe-patched-w-prs_164_166_168</version>
 	<name>Authorize.Net Java SDK</name>
 	<description>Authorize.Net SDK includes standard payments, recurring billing, and customer profiles.</description>
 	<url>http://developer.authorize.net</url>
@@ -137,6 +137,13 @@
 			</plugin>
 		</plugins>
 		<resources>
+			<resource>
+				<directory>.</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/LOCAL_BUILD_INFO.mkienenb</include>
+				</includes>
+			</resource>
 			<resource>
 				<directory>resources</directory>
 				<filtering>true</filtering>
