@@ -38,7 +38,8 @@ import net.authorize.api.contract.v1.MessagesType.Message;
  */
 public final class HttpUtility {
 
-	private static Log logger = LogFactory.getLog(HttpUtility.class);	
+    private static Log loggerSensitive = LogFactory.getLog(SensitiveLogger.class);
+    private static Log filteredLogger = new SensitiveFilterLogWrapper(LogFactory.getLog(HttpUtility.class));   
 
 	static int httpConnectionTimeout = Environment.getIntProperty(Constants.HTTP_CONNECTION_TIME_OUT);
 	static int httpReadTimeout = Environment.getIntProperty(Constants.HTTP_READ_TIME_OUT);
@@ -72,7 +73,7 @@ public final class HttpUtility {
 
 		if(null != request) {
 			  postUrl = new URI(env.getXmlBaseUrl() + "/xml/v1/request.api");
-			  logger.debug(String.format("Posting request to Url: '%s'", postUrl));
+			  filteredLogger.debug(String.format("Posting request to Url: '%s'", postUrl));
 			  httpPost = new HttpPost(postUrl);
               httpPost.getParams().setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
               
@@ -84,7 +85,11 @@ public final class HttpUtility {
 			  httpPost.setHeader("Content-Type", "text/xml; charset=utf-8");
 			  
 			  String xmlRequest = XmlUtility.getXml(request);
-			  logger.debug(String.format("Request: '%s%s%s'", LogHelper.LineSeparator, xmlRequest, LogHelper.LineSeparator));
+              if (loggerSensitive.isDebugEnabled()) {
+                  loggerSensitive.debug(String.format("Request: '%s%s%s'", LogHelper.LineSeparator, xmlRequest, LogHelper.LineSeparator));
+              } else if (filteredLogger.isDebugEnabled()) {
+                  filteredLogger.debug(String.format("Request: '%s%s%s'", LogHelper.LineSeparator, xmlRequest, LogHelper.LineSeparator));
+              }
 			  httpPost.setEntity(new StringEntity(xmlRequest, HTTP.UTF_8));
 		}
 
@@ -107,12 +112,16 @@ public final class HttpUtility {
 		
         try {
         	response = future.get();
-        	logger.debug(String.format("Response: '%s'", response));
+            if (loggerSensitive.isDebugEnabled()) {
+                loggerSensitive.debug(String.format("Response: '%s'", response));
+            } else if (filteredLogger.isDebugEnabled()) {
+                filteredLogger.debug(String.format("Response: '%s'", response));
+            }
 		} catch (InterruptedException ie) {
-			logger.error(String.format("Http call interrupted Message: '%s'", ie.getMessage()));
+		    filteredLogger.error(String.format("Http call interrupted Message: '%s'", ie.getMessage()));
 			response = createErrorResponse(ie);
 		} catch (ExecutionException ee) {
-			logger.error(String.format("Execution error for http post Message: '%s'", ee.getMessage()));
+		    filteredLogger.error(String.format("Execution error for http post Message: '%s'", ee.getMessage()));
 			response = createErrorResponse(ee);
 		}
 
@@ -163,9 +172,9 @@ public final class HttpUtility {
 		try {
 			bomStripperStream = new BOMStripperInputStream(is) ;
 		} catch (NullPointerException e) {
-			logger.warn(String.format("Exception creating BOMStripperInputStream: '%s'", e.getMessage()));
+		    filteredLogger.warn(String.format("Exception creating BOMStripperInputStream: '%s'", e.getMessage()));
 		} catch (IOException e) {
-			logger.warn(String.format("Exception creating BOMStripperInputStream: '%s'", e.getMessage()));
+		    filteredLogger.warn(String.format("Exception creating BOMStripperInputStream: '%s'", e.getMessage()));
 		}
 		if ( null == bomStripperStream) {
 			throw new NullPointerException("Unable to create BomStriper from the input stream");
@@ -175,7 +184,7 @@ public final class HttpUtility {
     	try {
     		bomStripperStream.skipBOM();
 		} catch (IOException e) {
-			logger.warn(String.format("Exception setting skip for BOMStripperInputStream: '%s'", e.getMessage()));
+		    filteredLogger.warn(String.format("Exception setting skip for BOMStripperInputStream: '%s'", e.getMessage()));
 		} 
 
 	    String line = null;
@@ -191,7 +200,7 @@ public final class HttpUtility {
 	            sb.append(line).append(LogHelper.LineSeparator);
 	        }
 	    } catch (IOException e) {
-			logger.warn(String.format("Exception reading data from Stream: '%s'", e.getMessage()));
+	        filteredLogger.warn(String.format("Exception reading data from Stream: '%s'", e.getMessage()));
 	    } finally {
 
 	    	tryClose( reader);
@@ -209,7 +218,7 @@ public final class HttpUtility {
 	    	try {
 	    		closableObject.close();
 			} catch (Exception e) {
-				logger.warn(String.format("Exception closing '%s': '%s'", closableObject.getClass(), e.getMessage()));
+			    filteredLogger.warn(String.format("Exception closing '%s': '%s'", closableObject.getClass(), e.getMessage()));
 			}
 	    }
 	}
